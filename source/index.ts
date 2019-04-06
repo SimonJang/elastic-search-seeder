@@ -1,14 +1,14 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import {EOL} from 'os';
-import * as loadJSON from 'load-json-file';
+// tslint:disable:no-floating-promises
+import * as userGenerator from './data-generation/user';
+import * as seeder from './elasticsearch/seed';
 
-const movieData = loadJSON.sync(path.join(__dirname, '..', 'data', 'tmdb.json'));
-
-let ndJSON = '';
-
-for (const key of Object.keys(movieData)) {
-	ndJSON += JSON.stringify(movieData[key]) + EOL;
-}
-
-fs.writeFileSync(path.join(__dirname, '..', 'data', 'tmdb.ndjson'), ndJSON);
+/**
+ * Seed users
+ */
+(async () => {
+	// Generate 10 bulks of 500 users each, accounting for 5k users
+	for (let x = 1; x <= 10; x++) {
+		const userData = userGenerator.generateUsers(500, undefined, true) as string;
+		await seeder.seedElasticSearch('users', 'user', userData);
+	}
+})();
