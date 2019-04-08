@@ -15,10 +15,15 @@ export const generateUsers = (amount: number, filePath: string = path.join(defau
 	const data: any[] = [];
 
 	for (let x = 0; x < amount; x++) {
+		const firstName = faker.name.firstName();
+		const id = faker.random.uuid().split('-').join('');
+		const name = faker.name.lastName();
+
 		data.push({
-			id: faker.random.uuid().split('-').join(''),
-			firstName: faker.name.firstName(),
-			name: faker.name.lastName()
+			id,
+			firstName,
+			name,
+			username: `${firstName}.${name}`
 		});
 	}
 
